@@ -1,10 +1,14 @@
 import React from "react";
-import { Header } from "./components/Header";
-import './styles/global.css';
+import { Header } from "./components/Header/Header";
+import "./styles/global.css";
+import { Tasks } from "./components/Tasks/Tasks";
 
 function App() {
-  return(
+  return (
+    <>
     <Header />
+    <Tasks />
+    </>
   )
 }
 
