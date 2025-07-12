@@ -1,16 +1,12 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import styles from "./styles.module.scss";
-
-interface Task {
-  id: number;
-  title: string;
-  done: boolean;
-}
+import { TasksContext } from "../../context/TasksContext";
 
 export const Tasks: React.FC = () => {
 
     const [taskTitle, setTaskTitle] = useState('');
-    const [tasks, setTasks] = useState([] as Task[]);
+
+    const {tasks, setTasks} = useContext(TasksContext);
 
   function handleSubmitAddTask(event: FormEvent){
     event.preventDefault();
@@ -21,16 +17,41 @@ export const Tasks: React.FC = () => {
     }
 
     // adicionar a tarefa
-    setTasks([
+    const newTasks = [
       ...tasks,
       {
         id: Math.random(),
         title: taskTitle,
         done: false
       },
-    ])
+    ]
+    setTasks(newTasks)
+    localStorage.setItem('tasks', JSON.stringify(newTasks))
     setTaskTitle ('')
   }
+
+  function handleToggleTaskStatus(taskId: number) {
+    const newTasks = tasks.map((task) => {
+       if (task.id === taskId) {
+        return{
+          ...task,
+          done: !task.done
+        }
+    }
+      return task;
+    })
+
+    setTasks(newTasks);
+  }
+
+
+  function handleRemoveTask(taskId: number) {
+    const newTasks = tasks.filter((task) => task.id !== taskId);
+    setTasks(newTasks);
+    localStorage.setItem('tasks', JSON.stringify(newTasks));
+  }
+
+
 
   return (
     <section className={styles.container}>
@@ -52,8 +73,11 @@ export const Tasks: React.FC = () => {
             <li
             key={tasks.id}
             > 
-              <input type="checkbox" id={`tasks-${tasks.id}`}/>
-              <label htmlFor={`tasks-${tasks.id}`}>{tasks.title}</label>
+              <input
+              type="checkbox" id={`tasks-${tasks.id}`} onChange={() => handleToggleTaskStatus (tasks.id)}/>
+              <label htmlFor={`tasks-${tasks.id}`} className={tasks.done ? styles.done : ''}>{tasks.title}</label>
+
+              <button onClick={() => handleRemoveTask(tasks.id)}>Remover</button>
             </li>
           )
         })}

@@ -1,14 +1,17 @@
-import React from "react";
 import { Header } from "./components/Header/Header";
 import "./styles/global.css";
 import { Tasks } from "./components/Tasks/Tasks";
+import { TasksProvider } from "./context/TasksContext";
 
 function App() {
+
+  
+
   return (
-    <>
-    <Header />
-    <Tasks />
-    </>
+    <TasksProvider>
+      <Header />
+      <Tasks />
+    </TasksProvider>
   )
 }
 
